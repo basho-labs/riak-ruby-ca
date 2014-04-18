@@ -28,8 +28,7 @@ namespace :ca do
   end
 
   file 'ca/ca.crt' => 'ca/ca.csr' do
-    days = ((1375664400 - Time.now.to_i) / (24 * 60 * 60.0)).ceil
-    sh "openssl x509 -req -days #{days} -in ca/ca.csr -out ca/ca.crt -signkey ca/ca.key"
+    sh "openssl x509 -req -days 3650 -in ca/ca.csr -out ca/ca.crt -signkey ca/ca.key"
   end
 
   desc "Destroy the CA key, request, and certificate"
