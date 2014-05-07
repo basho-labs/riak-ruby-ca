@@ -1,6 +1,7 @@
 namespace :server do
   task :key => 'server/server.key'
   task :req => 'server/server.req'
+  task :crl => 'server/server.crl'
   
   desc "Produce a web certificate signed by the root CA"
   task :sign => 'server/server.crt'
@@ -42,12 +43,14 @@ namespace :server do
     sh "yes | openssl ca -config openssl.cnf -days #{days} -in server/server.csr -cert ca/ca.crt -key ca/ca.key -out server/server.crt"
   end
 
-  file 'server.tar.bz2' => ['server/server.key', 'server/server.crt', 'ca/ca.crt'] do |t|
-    sh "tar jcf server.tar.bz2 #{t.prerequisites.join ' '}"
-  end
-
-  file 'server.iso' => ['server/server.key', 'server/server.crt', 'ca/ca.crt'] do |t|
-    sh "mkisofs --allow-lowercase -o server.iso #{t.prerequisites.join ' '}"
+  file 'server/server.crl' => [
+                               'server/server.crt',
+                               'ca/ca.key',
+                               'ca/ca.crt',
+                               'crlnumber'
+                              ] do
+    sh "openssl ca -gencrl -keyfile ca/ca.key -cert ca/ca.crt -out server/server.crl"
+    sh "openssl ca -revoke server/server.crt -keyfile ca/ca.key -cert ca/ca.crt"
   end
 
   desc "Destroy the server key, request, cert, and bundle"
