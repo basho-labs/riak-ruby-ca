@@ -6,6 +6,8 @@ require './tasks/server'
 
 task :default => 'server/server.crt'
 
+ENV['OPENSSL_CONF'] = File.expand_path(File.join(__dir__, 'openssl.cnf'))
+
 directory 'newcerts'
 
 file 'index.txt' do
@@ -16,6 +18,9 @@ file 'index.txt.attr' do
 end
 file 'serial' do
   sh "echo #{SecureRandom.random_number 1_000_000} > serial"
+end
+file 'crlnumber' do
+  sh "echo #{SecureRandom.random_number 1_000_000} > crlnumber"
 end
 
 task :clean => ['ca:clean', 'server:clean'] do
