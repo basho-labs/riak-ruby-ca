@@ -4,3 +4,5 @@ newcerts
 server
 ca
 server.tar.bz2
+crlnumber
+crlnumber.old
