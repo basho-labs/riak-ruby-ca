@@ -3,6 +3,7 @@ require 'json'
 
 require './tasks/ca'
 require './tasks/server'
+require './tasks/client'
 
 task :default => 'server/server.crt'
 
@@ -23,7 +24,7 @@ file 'crlnumber' do
   sh "echo #{SecureRandom.random_number 1_000_000} > crlnumber"
 end
 
-task :clean => ['ca:clean', 'server:clean'] do
+task :clean => ['ca:clean', 'server:clean', 'client:clean'] do
   sh 'rm -f index.txt*'
   sh 'rm -f serial*'
   sh 'rm -f newcerts/*'
