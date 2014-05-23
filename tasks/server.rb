@@ -6,9 +6,6 @@ namespace :server do
   desc "Produce a web certificate signed by the root CA"
   task :sign => 'server/server.crt'
 
-  desc "Bundle up the web key, certificate, and root CA"
-  task :bundle => 'server.tar.bz2'
-
   directory 'server'
   
   file 'server/server.key' => 'server' do
@@ -40,7 +37,7 @@ namespace :server do
                                'newcerts'
                               ] do
     days = 3650
-    sh "yes | openssl ca -config openssl.cnf -days #{days} -in server/server.csr -cert ca/ca.crt -key ca/ca.key -out server/server.crt"
+    sh "yes | openssl ca -days #{days} -in server/server.csr -cert ca/ca.crt -key ca/ca.key -out server/server.crt"
   end
 
   file 'server/server.crl' => [
@@ -49,13 +46,15 @@ namespace :server do
                                'ca/ca.crt',
                                'crlnumber'
                               ] do
+    sh "rm -f index.txt"
+    sh "touch index.txt"
     sh "openssl ca -gencrl -keyfile ca/ca.key -cert ca/ca.crt -out server/server.crl"
     sh "openssl ca -revoke server/server.crt -keyfile ca/ca.key -cert ca/ca.crt"
+    sh "openssl ca -gencrl -keyfile ca/ca.key -cert ca/ca.crt -out server/server.crl"
   end
 
-  desc "Destroy the server key, request, cert, and bundle"
+  desc "Destroy the server key, request, cert, and crl"
   task :clean do
     sh 'rm -rf server'
-    sh 'rm -f server.tar.bz2'
   end
 end
