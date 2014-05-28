@@ -19,7 +19,7 @@ namespace :client do
       l: 'Miami',
       o: '',
       ou: 'Riak Ruby client',
-      cn: 'user',
+      cn: 'certuser',
       email: 'bryce@basho.com',
       pass: '',
       company: '',
