@@ -19,7 +19,7 @@ namespace :server do
       l: 'Miami', 
       o: '', 
       ou: 'Riak Ruby client', 
-      cn: 'localhost', 
+      cn: 'riak@127.0.0.1', 
       email: 'bryce@basho.com',
       pass: '',
       company: '',
